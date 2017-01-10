@@ -10,8 +10,8 @@ using namespace std;
 using namespace sf;
 
 
-const int n = 25;
-const int m = 10;
+const int n = 24;
+const int m = 12;
 int board[n][m] = { 0 };
 
 
@@ -38,8 +38,11 @@ struct Coordonate
 
 int main()
 {
+	int dx = 0;
+	bool rotatie = false;
+	
 
-	RenderWindow window(VideoMode(600, 1000), "TETRIS");
+	RenderWindow window(VideoMode(650, 960), "TETRIS");
 
 	
 
@@ -60,19 +63,53 @@ int main()
 
 		Event event;
 
-		while (window.pollEvent(event))
+		while(window.pollEvent(event))
 		{
 
 			if (event.type == Event::Closed)
 				window.close();
+			if (event.type == Event::KeyPressed)
+				if (event.key.code == Keyboard::Space) rotatie = true;
+				else if (event.key.code == Keyboard::Left) dx = -1;
+				else if (event.key.code == Keyboard::Right) dx = 1;
 
 		}
 
+		
+
+		//<---Mutare--->//
+		for (int i = 0; i < 4; i++)
+		{
+			
+			a[i].x = a[i].x + dx;
+
+		}
+
+		//<--Rotire-->//
+		if (rotatie) {
+			Coordonate p = a[1]; //punctul de rotire
+			for (int i = 0; i < 4; i++)
+			{
+				int x = a[i].y - p.y;
+				int y = a[i].x - p.x;
+				a[i].x = p.x - x;
+				a[i].y = p.y + y;
+
+			}
+
+		}
+
+		dx = 0;
+		rotatie = false;
+
+
+
 	
 		int n = 1;
+		if(a[0].x==0)
 				for (int i = 0; i < 4; i++)
 				{
-					a[i].x = piese[n][i] % 2 ;
+					a[i].x = piese[n][i] % 2 + 5;
 					a[i].y = piese[n][i] / 2 ;
 				}
 
