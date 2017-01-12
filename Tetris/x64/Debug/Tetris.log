@@ -1,4 +1,10 @@
 ﻿  Tetris.cpp
-c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(121): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(55): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(58): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(98): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(100): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(184): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(199): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(207): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Tetris.vcxproj -> C:\Users\Alex\documents\visual studio 2015\Projects\Tetris\x64\Debug\Tetris.exe
   Tetris.vcxproj -> C:\Users\Alex\documents\visual studio 2015\Projects\Tetris\x64\Debug\Tetris.pdb (Full PDB)
