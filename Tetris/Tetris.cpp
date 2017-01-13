@@ -12,7 +12,6 @@
 #include<string>
 #include<Windows.h>
 #include<mmsystem.h>
-
 #include <iostream>
 
 using namespace std;
@@ -37,12 +36,13 @@ int piese[7][4] =
 
 
 
-
 struct Coordonate
 {
 	int x;
 	int y;
-}a[4], b[4];
+}a[4], b[4],c[4];
+
+
 
 
 bool verificare()
@@ -54,20 +54,23 @@ bool verificare()
 		return true;
 }
 
+RenderWindow window(VideoMode(650, 960), "TETRIS", Style::Close | Style::Titlebar);
 
 
-int main()
+
+void Tetris()
 {
 	int dx = 0;
 	bool rotatie = false;
 	int culoare = 0;
-	float timer = 0, delay = 0.3;
+	double timer = 0, delay = 0.3;
 	Clock clock;
 	Music music;
 	Music sound;
 	Music fail;
 	fail.openFromFile("Fail.ogg");
 	bool stop = false;
+	bool solo = false;
 
 
 	if (!music.openFromFile("Wicked.ogg"))
@@ -80,9 +83,9 @@ int main()
 
 	music.play();
 
-	int score = 0;
-	ostringstream ssScore;
-	ssScore << "Score"<<endl<<"   "<< score;
+	int scor = 0;
+	ostringstream ss;
+	ss<< "Score"<<endl<<"   "<< scor;
 
 	Font arial;
 	arial.loadFromFile("impact.ttf");
@@ -91,27 +94,24 @@ int main()
 	ScorActual.setCharacterSize(30);
 	ScorActual.setPosition({ 525,70 });
 	ScorActual.setFont(arial);
-	ScorActual.setString(ssScore.str());
+	ScorActual.setString(ss.str());
 	
 	
 	srand(time(0));
-
-	RenderWindow window(VideoMode(650, 960), "TETRIS", Style::Close |Style::Titlebar);
 
 
 	Texture ImaginePiese, Back, GameOv;
 	ImaginePiese.loadFromFile("images/piese2.png");
 	Back.loadFromFile("images/background.png");
 	GameOv.loadFromFile("images/GameOver.png");
-
-
+	
+	
 	Sprite s(ImaginePiese), background(Back), finish(GameOv);
-	s.setTextureRect(IntRect(0, 0, 40, 40));
+	
+	
 
-	bool wait = false;
-
-
-
+	
+	int Random = rand() % 7;
 
 	while (window.isOpen())
 	{
@@ -139,7 +139,9 @@ int main()
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Down)) delay = 0.05;
 		if (Keyboard::isKeyPressed(Keyboard::Q)) window.close();
-		if (Keyboard::isKeyPressed(Keyboard::S)) delay=0.004;
+		if (Keyboard::isKeyPressed(Keyboard::LShift)) delay=0.004;
+		
+
 
 
 	if(!stop){
@@ -171,15 +173,18 @@ int main()
 				sound.play();
 				if (!verificare())
 					for (int i = 0; i < 4; i++) a[i] = b[i];
+			
+				
 			}
 
 
 
-
+			int p = Random;
 
 			//<--Cadere-->//
 			if (timer > delay)
 			{
+
 				for (int i = 0; i < 4; i++) {
 					b[i] = a[i];
 					a[i].y += 1;
@@ -189,18 +194,19 @@ int main()
 					for (int i = 0; i < 4; i++) board[b[i].y][b[i].x] = culoare;
 
 					culoare = 1 + rand() % 7;
-					int n = rand() % 7;
-					culoare = 1 + rand() % 7;
+
 
 					for (int i = 0; i < 4; i++)
 					{
-						a[i].x = piese[n][i] % 2 + 6;
-						a[i].y = piese[n][i] / 2 - 2;
+						a[i].x = piese[p][i] % 2 + 6;
+						a[i].y = piese[p][i] / 2 - 2;
 
 					}
 				}
 				timer = 0;
 			}
+
+
 
 
 
@@ -222,10 +228,10 @@ int main()
 
 				if (nr == m)
 				{
-					score = score + 20;
-					ssScore.str("");
-					ssScore << "Score" <<endl<<"   "<< score;
-					ScorActual.setString(ssScore.str());
+					scor = scor + 50;
+					ss.str("");
+					ss << "Score" << endl << "   " << scor;
+					ScorActual.setString(ss.str());
 				}
 
 
@@ -250,14 +256,11 @@ int main()
 					}
 
 				if (nr == n)
-				{
+				{	
 					stop = true;
 					window.draw(finish);
 					music.stop();
 					fail.play();
-
-
-
 
 				}
 
@@ -268,11 +271,15 @@ int main()
 			dx = 0;
 			rotatie = false;
 			delay = 0.3;
+			Random = rand() % 7;
 
 
+
+		
 			window.clear();
 			window.draw(background);
-
+			
+		
 			//<--Culoare si dimensiuni-->//
 
 			for (int i = 0; i < n; i++)
@@ -294,17 +301,18 @@ int main()
 				window.draw(s);
 			}
 
+			
+			
+
+
 		}
-			else if (Keyboard::isKeyPressed(Keyboard::T)) wait = false;
+			else if (Keyboard::isKeyPressed(Keyboard::R)) wait = false;
 
 
-		
+
 			window.draw(ScorActual);
 			window.display();
 			
-
-			
-
 		}
 	else {
 			window.draw(finish);
@@ -313,5 +321,37 @@ int main()
 	}
 
 
-	return 0;
+	
 }
+
+
+	void main()
+	{
+		Texture menuTex;
+		menuTex.loadFromFile("images/meniu.png");
+		Sprite menu;
+		menu.setTexture(menuTex);
+
+		window.clear(Color::Black);
+		window.draw(menu);
+		window.display();
+		while (window.isOpen())
+		{
+			Event windowMenu;
+			while (window.pollEvent(windowMenu))
+			{
+				if (windowMenu.type == Event::Closed)
+					window.close();
+				if (windowMenu.type == Event::KeyPressed)
+					if (windowMenu.key.code == Keyboard::S)
+					{
+						Tetris();
+
+					}
+				
+					else if (windowMenu.key.code == Keyboard::Q) window.close();
+			}
+
+		}
+	}
+
