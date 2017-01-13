@@ -68,9 +68,10 @@ void Tetris()
 	Music music;
 	Music sound;
 	Music fail;
+	
 	fail.openFromFile("Fail.ogg");
 	bool stop = false;
-	bool solo = false;
+	bool wait = false;
 
 
 	if (!music.openFromFile("Wicked.ogg"))
@@ -221,7 +222,9 @@ void Tetris()
 
 					if (board[i][j]) nr++;
 
+
 					board[k][j] = board[i][j];
+					
 
 
 				}

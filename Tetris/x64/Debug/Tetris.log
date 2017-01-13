@@ -1,7 +1,7 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (SFML3.vcxproj, TetrisMain.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Tetris.cpp
-c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(100): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(292): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(300): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(101): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(295): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\alex\documents\visual studio 2015\projects\tetris\tetris\tetris.cpp(303): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Tetris.vcxproj -> C:\Users\Alex\Documents\Visual Studio 2015\Projects\Tetris\x64\Debug\Tetris.exe
   Tetris.vcxproj -> C:\Users\Alex\Documents\Visual Studio 2015\Projects\Tetris\x64\Debug\Tetris.pdb (Full PDB)
