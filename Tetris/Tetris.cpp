@@ -3,6 +3,15 @@
 
 #include "stdafx.h"
 #include <SFML\Graphics.hpp>
+#include "stdafx.h"
+#include <SFML\Graphics.hpp>
+#include <SFML\Audio.hpp>
+#include <iostream>
+#include <fstream>
+#include<sstream>
+#include<string>
+#include<Windows.h>
+#include<mmsystem.h>
 
 #include <iostream>
 
@@ -54,20 +63,52 @@ int main()
 	int culoare = 0;
 	float timer = 0, delay = 0.3;
 	Clock clock;
+	Music music;
+	Music sound;
+	Music fail;
+	fail.openFromFile("Fail.ogg");
+	bool stop = false;
+
+
+	if (!music.openFromFile("Wicked.ogg"))
+	{
+		cout << "ERROR" << endl;
+
+	}
+	sound.openFromFile("GunShot.ogg");
+	
+
+	music.play();
+
+	int score = 0;
+	ostringstream ssScore;
+	ssScore << "Score"<<endl<<"   "<< score;
+
+	Font arial;
+	arial.loadFromFile("impact.ttf");
+
+	Text ScorActual;
+	ScorActual.setCharacterSize(30);
+	ScorActual.setPosition({ 525,70 });
+	ScorActual.setFont(arial);
+	ScorActual.setString(ssScore.str());
+	
 	
 	srand(time(0));
 
-	RenderWindow window(VideoMode(650, 960), "TETRIS");
+	RenderWindow window(VideoMode(650, 960), "TETRIS", Style::Close |Style::Titlebar);
 
-	
 
-	Texture ImaginePiese, Back;
+	Texture ImaginePiese, Back, GameOv;
 	ImaginePiese.loadFromFile("images/piese2.png");
 	Back.loadFromFile("images/background.png");
+	GameOv.loadFromFile("images/GameOver.png");
 
 
-	Sprite s(ImaginePiese), background(Back);
+	Sprite s(ImaginePiese), background(Back), finish(GameOv);
 	s.setTextureRect(IntRect(0, 0, 40, 40));
+
+	bool wait = false;
 
 
 
@@ -93,104 +134,149 @@ int main()
 				if (event.key.code == Keyboard::Space) rotatie = true;
 				else if (event.key.code == Keyboard::Left) dx = -1;
 				else if (event.key.code == Keyboard::Right) dx = 1;
+				else if (event.key.code == Keyboard::P) wait = true;
 
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Down)) delay = 0.05;
 		if (Keyboard::isKeyPressed(Keyboard::Q)) window.close();
 		if (Keyboard::isKeyPressed(Keyboard::S)) delay=0.004;
 
-		//<---Mutare--->//
-		for (int i = 0; i < 4; i++)
-		{
-			b[i] = a[i];
-			a[i].x = a[i].x + dx;
 
-		}
-		if (!verificare())
-			for (int i = 0; i < 4; i++) a[i] = b[i];
-	
+	if(!stop){
 
-		//<--Rotire-->//
-		if (rotatie) {
-			Coordonate rot = a[1]; //punctul de rotire
+		if (!wait) {
+
+			//<---Mutare--->//
 			for (int i = 0; i < 4; i++)
 			{
-				int x = a[i].y - rot.y;
-				int y = a[i].x - rot.x;
-				a[i].x = rot.x - x;
-				a[i].y = rot.y + y;
-
-			}		
-			if (!verificare())
-				for (int i = 0; i < 4; i++) a[i] = b[i];
-		}
-
-
-
-	
-
-		//<--Cadere-->//
-		if (timer > delay)
-		{
-			for (int i = 0; i < 4; i++) {
 				b[i] = a[i];
-				a[i].y += 1;
+				a[i].x = a[i].x + dx;
+
 			}
 			if (!verificare())
-			{
-				for (int i = 0; i < 4; i++) board[b[i].y][b[i].x] = culoare;
+				for (int i = 0; i < 4; i++) a[i] = b[i];
 
-				culoare = 1 + rand() % 7;
-				int n = rand() % 7;
-			
+
+			//<--Rotire-->//
+			if (rotatie) {
+				Coordonate rot = a[1]; //punctul de rotire
 				for (int i = 0; i < 4; i++)
 				{
-					a[i].x = piese[n][i] % 2 + 6;
-					a[i].y = piese[n][i] / 2 - 2;
+					int x = a[i].y - rot.y;
+					int y = a[i].x - rot.x;
+					a[i].x = rot.x - x;
+					a[i].y = rot.y + y;
+
+				}
+				sound.play();
+				if (!verificare())
+					for (int i = 0; i < 4; i++) a[i] = b[i];
+			}
+
+
+
+
+
+			//<--Cadere-->//
+			if (timer > delay)
+			{
+				for (int i = 0; i < 4; i++) {
+					b[i] = a[i];
+					a[i].y += 1;
+				}
+				if (!verificare())
+				{
+					for (int i = 0; i < 4; i++) board[b[i].y][b[i].x] = culoare;
+
+					culoare = 1 + rand() % 7;
+					int n = rand() % 7;
+					culoare = 1 + rand() % 7;
+
+					for (int i = 0; i < 4; i++)
+					{
+						a[i].x = piese[n][i] % 2 + 6;
+						a[i].y = piese[n][i] / 2 - 2;
+
+					}
+				}
+				timer = 0;
+			}
+
+
+
+
+
+			//<--Verificare ultima linie-->//
+			int k = n - 1;
+			for (int i = n - 1; i > 0; i--)
+			{
+				int nr = 0;
+				for (int j = 0; j < m; j++) {
+
+					if (board[i][j]) nr++;
+
+					board[k][j] = board[i][j];
+
+
+				}
+
+				if (nr == m)
+				{
+					score = score + 20;
+					ssScore.str("");
+					ssScore << "Score" <<endl<<"   "<< score;
+					ScorActual.setString(ssScore.str());
+				}
+
+
+				if (nr < m) {
+
+					k--;
 
 				}
 			}
-			timer = 0;
-		}
-		
-	
-	
+
+			int  nr = 0;
+			for (int i = n - 1; i >= 0; i--)
+			{
+
+				for (int j = 0; j <= m - 1; j++)
 
 
-		//<--Verificare ultima linie-->//
-		int k = n - 1;
-		for (int i = n - 1; i > 0; i--)
-		{
-			int nr = 0;
-			for (int j = 0; j < m; j++) {
+					if (board[i][j])
+					{
+						nr++;
+						break;
+					}
 
-				if (board[i][j]) nr++;
+				if (nr == n)
+				{
+					stop = true;
+					window.draw(finish);
+					music.stop();
+					fail.play();
 
-				board[k][j] = board[i][j];
 
-				
+
+
+				}
+
 			}
-			if (nr < m) {
 
-				k--;
 
-			}
-		}
-
-		
 
 			dx = 0;
 			rotatie = false;
 			delay = 0.3;
 
-			
+
 			window.clear();
 			window.draw(background);
 
 			//<--Culoare si dimensiuni-->//
 
-			for (int i = 0; i<n; i++)
-				for (int j = 0; j<m; j++)
+			for (int i = 0; i < n; i++)
+				for (int j = 0; j < m; j++)
 				{
 					if (board[i][j] == 0) continue;
 					//<--Dimensiunea si culoarea dupa ce au ajuns la final-->//
@@ -201,15 +287,29 @@ int main()
 				}
 
 
-		for (int i = 0; i < 4; i++)
-		{
-			s.setTextureRect(IntRect(culoare * 40, 0, 40, 40));
-			s.setPosition(a[i].x * 40, a[i].y * 40);
-			window.draw(s);
+			for (int i = 0; i < 4; i++)
+			{
+				s.setTextureRect(IntRect(culoare * 40, 0, 40, 40));
+				s.setPosition(a[i].x * 40, a[i].y * 40);
+				window.draw(s);
+			}
+
 		}
+			else if (Keyboard::isKeyPressed(Keyboard::T)) wait = false;
 
-		window.display();
 
+		
+			window.draw(ScorActual);
+			window.display();
+			
+
+			
+
+		}
+	else {
+			window.draw(finish);
+			window.display();
+		}
 	}
 
 
